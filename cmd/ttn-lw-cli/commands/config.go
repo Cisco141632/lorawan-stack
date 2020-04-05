@@ -34,7 +34,7 @@ var (
 	defaultInsecure           = false
 	defaultClusterHost        = "localhost"
 	defaultGRPCAddress        = fmt.Sprintf("%s:%d", defaultClusterHost, discover.DefaultPorts[!defaultInsecure])
-	defaultOauthServerAddress = fmt.Sprintf("%s/oauth", httpAddress(defaultClusterHost, !defaultInsecure))
+	defaultOAuthServerAddress = fmt.Sprintf("%s/oauth", httpAddress(defaultClusterHost, !defaultInsecure))
 )
 
 // Config for the ttn-lw-cli binary.
@@ -111,7 +111,7 @@ func MakeDefaultConfig(clusterGRPCAddress string, oauthServerAddress string, ins
 }
 
 // DefaultConfig contains the default config for the ttn-lw-cli binary.
-var DefaultConfig = MakeDefaultConfig(defaultGRPCAddress, defaultOauthServerAddress, defaultInsecure)
+var DefaultConfig = MakeDefaultConfig(defaultGRPCAddress, defaultOAuthServerAddress, defaultInsecure)
 
 var configCommand = commands.Config(mgr)
 
