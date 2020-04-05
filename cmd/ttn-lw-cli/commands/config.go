@@ -33,7 +33,7 @@ func httpAddress(host string, tls bool) string {
 var (
 	defaultInsecure           = false
 	defaultClusterHost        = "localhost"
-	defaultGRPCAddress        = fmt.Sprintf("%s:%d", defaultClusterHost, discover.DefaultPorts[!defaultInsecure])
+	defaultGRPCAddress, _     = discover.WithDefaultPort(defaultClusterHost, discover.DefaultPorts[!defaultInsecure])
 	defaultOAuthServerAddress = fmt.Sprintf("%s/oauth", httpAddress(defaultClusterHost, !defaultInsecure))
 )
 
