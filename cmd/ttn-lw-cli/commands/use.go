@@ -52,7 +52,11 @@ var (
 			overwrite, _ := cmd.Flags().GetBool("overwrite")
 
 			host := args[0]
-			grpcServerAddress, err := discover.WithDefaultPort(host, discover.DefaultPorts[!insecure])
+			grpcPort, _ := cmd.Flags().GetInt("grpc-port")
+			if grpcPort == 0 {
+				grpcPort = discover.DefaultPorts[!insecure]
+			}
+			grpcServerAddress, err := discover.WithDefaultPort(host, grpcPort)
 			if err != nil {
 				return nil
 			}
@@ -143,5 +147,6 @@ func init() {
 	useCommand.Flags().Bool("user", false, "Write config file in user config directory")
 	useCommand.Flags().Bool("overwrite", false, "Overwrite existing config files")
 	useCommand.Flags().String("oauth-server-address", "", "OAuth server address")
+	useCommand.Flags().Int("grpc-port", 0, "")
 	Root.AddCommand(useCommand)
 }
