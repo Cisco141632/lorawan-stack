@@ -38,7 +38,7 @@ func TestDefaultPort(t *testing.T) {
 		"[::":            "", // Invalid address
 	} {
 		t.Run(input, func(t *testing.T) {
-			target, err := defaultPort(input, 8884)
+			target, err := WithDefaultPort(input, 8884)
 			if err != nil {
 				target = ""
 			}

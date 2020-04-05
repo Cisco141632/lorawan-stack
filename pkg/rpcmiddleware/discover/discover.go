@@ -28,7 +28,8 @@ import (
 
 var errAddress = errors.DefineInvalidArgument("address", "invalid address")
 
-func defaultPort(target string, port int) (string, error) {
+// WithDefaultPort appends port if target does not already have one.
+func WithDefaultPort(target string, port int) (string, error) {
 	i := strings.LastIndexByte(target, ':')
 	if i < 0 {
 		return fmt.Sprintf("%s:%d", target, port), nil
@@ -49,7 +50,8 @@ func defaultPort(target string, port int) (string, error) {
 	return target, nil
 }
 
-var defaultPorts = map[bool]int{
+// DefaultPorts is a map of the default gRPC ports, with/without TLS.
+var DefaultPorts = map[bool]int{
 	false: 1884,
 	true:  8884,
 }
@@ -57,7 +59,7 @@ var defaultPorts = map[bool]int{
 func resolver(tls bool) func(ctx context.Context, target string) (net.Conn, error) {
 	return func(ctx context.Context, target string) (net.Conn, error) {
 		// TODO: If no port is specified, discover through SRV records (https://github.com/TheThingsNetwork/lorawan-stack/issues/138)
-		target, err := defaultPort(target, defaultPorts[tls])
+		target, err := WithDefaultPort(target, DefaultPorts[tls])
 		if err != nil {
 			return nil, err
 		}
