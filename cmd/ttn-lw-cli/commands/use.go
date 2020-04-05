@@ -28,6 +28,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"go.thethings.network/lorawan-stack/pkg/errors"
+	"go.thethings.network/lorawan-stack/pkg/rpcmiddleware/discover"
 	"gopkg.in/yaml.v2"
 )
 
@@ -50,6 +51,18 @@ var (
 			user, _ := cmd.Flags().GetBool("user")
 			overwrite, _ := cmd.Flags().GetBool("overwrite")
 
+			host := args[0]
+			grpcServerAddress, err := discover.WithDefaultPort(host, discover.DefaultPorts[!insecure])
+			if err != nil {
+				return nil
+			}
+			oauthServerAddress, _ := cmd.Flags().GetString("oauth-server-address")
+			if oauthServerAddress == "" {
+				oauthServerAddress = httpAddress(host, !insecure) + "/oauth"
+			}
+			conf := MakeDefaultConfig(grpcServerAddress, oauthServerAddress, insecure)
+			conf.CredentialsID = host
+
 			destPath := func(base string, user bool, overwrite bool) (string, error) {
 				fileName := base
 				if user {
@@ -66,10 +79,6 @@ var (
 				}
 				return fileName, nil
 			}
-
-			host := args[0]
-			conf := MakeDefaultConfig(host, insecure)
-			conf.CredentialsID = host
 
 			// Get CA certificate from server
 			if !insecure && fetchCA {
@@ -133,5 +142,6 @@ func init() {
 	useCommand.Flags().Bool("fetch-ca", false, "Connect to server and retrieve CA")
 	useCommand.Flags().Bool("user", false, "Write config file in user config directory")
 	useCommand.Flags().Bool("overwrite", false, "Overwrite existing config files")
+	useCommand.Flags().String("oauth-server-address", "", "OAuth server address")
 	Root.AddCommand(useCommand)
 }
