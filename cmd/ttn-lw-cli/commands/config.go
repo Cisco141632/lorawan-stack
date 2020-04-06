@@ -15,26 +15,18 @@
 package commands
 
 import (
-	"fmt"
-
 	"go.thethings.network/lorawan-stack/cmd/internal/commands"
 	conf "go.thethings.network/lorawan-stack/pkg/config"
 	"go.thethings.network/lorawan-stack/pkg/log"
 	"go.thethings.network/lorawan-stack/pkg/rpcmiddleware/discover"
 )
 
-func httpAddress(host string, tls bool) string {
-	if tls {
-		return fmt.Sprintf("https://%s:8885", host)
-	}
-	return fmt.Sprintf("http://%s:1885", host)
-}
-
 var (
-	defaultInsecure           = false
-	defaultClusterHost        = "localhost"
-	defaultGRPCAddress, _     = discover.WithDefaultPort(defaultClusterHost, discover.DefaultPorts[!defaultInsecure])
-	defaultOAuthServerAddress = fmt.Sprintf("%s/oauth", httpAddress(defaultClusterHost, !defaultInsecure))
+	defaultInsecure                  = false
+	defaultClusterHost               = "localhost"
+	defaultGRPCAddress, _            = discover.DefaultPort(defaultClusterHost, discover.DefaultPorts[!defaultInsecure])
+	defaultOAuthServerBaseAddress, _ = discover.DefaultURL(defaultClusterHost, discover.DefaultHTTPPorts[!defaultInsecure], !defaultInsecure)
+	defaultOAuthServerAddress        = defaultOAuthServerBaseAddress + "/oauth"
 )
 
 // Config for the ttn-lw-cli binary.

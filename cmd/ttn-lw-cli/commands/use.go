@@ -56,13 +56,17 @@ var (
 			if grpcPort == 0 {
 				grpcPort = discover.DefaultPorts[!insecure]
 			}
-			grpcServerAddress, err := discover.WithDefaultPort(host, grpcPort)
+			grpcServerAddress, err := discover.DefaultPort(host, grpcPort)
 			if err != nil {
 				return nil
 			}
 			oauthServerAddress, _ := cmd.Flags().GetString("oauth-server-address")
 			if oauthServerAddress == "" {
-				oauthServerAddress = httpAddress(host, !insecure) + "/oauth"
+				oauthServerBaseAddress, err := discover.DefaultURL(host, discover.DefaultHTTPPorts[!insecure], !insecure)
+				if err != nil {
+					return err
+				}
+				oauthServerAddress = oauthServerBaseAddress + "/oauth"
 			}
 			conf := MakeDefaultConfig(grpcServerAddress, oauthServerAddress, insecure)
 			conf.CredentialsID = host
