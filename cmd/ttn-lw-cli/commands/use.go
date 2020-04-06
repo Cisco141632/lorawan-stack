@@ -58,7 +58,7 @@ var (
 			}
 			grpcServerAddress, err := discover.DefaultPort(host, grpcPort)
 			if err != nil {
-				return nil
+				return err
 			}
 			oauthServerAddress, _ := cmd.Flags().GetString("oauth-server-address")
 			if oauthServerAddress == "" {
