@@ -28,8 +28,8 @@ import (
 
 var errAddress = errors.DefineInvalidArgument("address", "invalid address")
 
-// WithDefaultPort appends port if target does not already have one.
-func WithDefaultPort(target string, port int) (string, error) {
+// DefaultPort appends port if target does not already have one.
+func DefaultPort(target string, port int) (string, error) {
 	i := strings.LastIndexByte(target, ':')
 	if i < 0 {
 		return fmt.Sprintf("%s:%d", target, port), nil
@@ -56,10 +56,31 @@ var DefaultPorts = map[bool]int{
 	true:  8884,
 }
 
+// DefaultHTTPPorts is a map of the default HTTP ports, with/without TLS.
+var DefaultHTTPPorts = map[bool]int{
+	false: 1885,
+	true:  8885,
+}
+
+// HTTPProto is a map of the HTTP protocols, with/without TLS.
+var HTTPProto = map[bool]string{
+	false: "http",
+	true:  "https",
+}
+
+// DefaultURL appends protocol and port if target does not already have one.
+func DefaultURL(target string, port int, tls bool) (string, error) {
+	target, err := DefaultPort(target, port)
+	if err != nil {
+		return "", nil
+	}
+	return fmt.Sprintf("%s://%s", HTTPProto[tls], target), nil
+}
+
 func resolver(tls bool) func(ctx context.Context, target string) (net.Conn, error) {
 	return func(ctx context.Context, target string) (net.Conn, error) {
 		// TODO: If no port is specified, discover through SRV records (https://github.com/TheThingsNetwork/lorawan-stack/issues/138)
-		target, err := WithDefaultPort(target, DefaultPorts[tls])
+		target, err := DefaultPort(target, DefaultPorts[tls])
 		if err != nil {
 			return nil, err
 		}
