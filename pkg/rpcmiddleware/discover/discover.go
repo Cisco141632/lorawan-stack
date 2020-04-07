@@ -58,12 +58,12 @@ var DefaultPorts = map[bool]int{
 
 // DefaultHTTPPorts is a map of the default HTTP ports, with/without TLS.
 var DefaultHTTPPorts = map[bool]int{
-	false: 1885,
-	true:  8885,
+	false: 80,
+	true:  443,
 }
 
-// HTTPProto is a map of the HTTP protocols, with/without TLS.
-var HTTPProto = map[bool]string{
+// HTTPScheme is a map of the HTTP schemes, with/without TLS.
+var HTTPScheme = map[bool]string{
 	false: "http",
 	true:  "https",
 }
@@ -74,7 +74,7 @@ func DefaultURL(target string, port int, tls bool) (string, error) {
 	if err != nil {
 		return "", nil
 	}
-	return fmt.Sprintf("%s://%s", HTTPProto[tls], target), nil
+	return fmt.Sprintf("%s://%s", HTTPScheme[tls], target), nil
 }
 
 func resolver(tls bool) func(ctx context.Context, target string) (net.Conn, error) {
