@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CLI can now dump JSON encoded `grpc_payload` field for unary requests (see `--dump-requests` flag).
 - Template ID column in the webhook table in the Console.
 - Select all field mask paths in CLI get, list and search commands (see `--all` option).
+- Improve CLI support for unsetting fields (For example, `ttn-lw-cli dev update app dev --mac-settings.rx1-delay=null`).
 
 ### Changed
 
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - End device claim display bug when claim dates not set.
 - DeviceModeInd handling for LoRaWAN 1.1 devices.
 - Do not perform unnecessary gateway location updates.
+- CLI prints error on invalid enum values instead of interpreting them as zero.
 
 ### Security
 
